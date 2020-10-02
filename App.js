@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import {Persons} from './lib/Populate'
-import { SearchBar } from 'react-native-elements';
+import { SearchBar, ButtonGroup } from 'react-native-elements';
 
 
 const styles = StyleSheet.create({
@@ -18,11 +18,13 @@ const styles = StyleSheet.create({
 
 const FlatListBasics = () => {
     const [busy, isBusy] = useState(true)
+    const [selectedIndex, setIndex] = useState(0)
     const [disable, isDisable] = useState(false)
-    const [data, setData] = useState([{key: 'Empty'}])
+    const [data, setData] = useState([{name: 'Empty'}])
     const [search, setSearch] = useState('')
 
-    const [person] = useState(async () => Persons())
+    const [person] = useState( async () => (x,y) => x+y  )
+    const [P] = useState( async () => await Persons()  )
 
     console.log('once ?')
 
@@ -32,40 +34,56 @@ const FlatListBasics = () => {
         isBusy(true)
     }
 
-    useEffect(()=>{
-      // person.then(db => {
-      //   console.log('wtf -> ', Array.isArray(db), typeof db)
-      //   let d = db('cesar')
-      //   console.log('d', d)
-      //   return [{key: 'Empty'}]
-      // })
-      // .then(data => setData(data))
+    const updateIndex = (index) => setIndex(index) 
 
-      console.log('[search] person: ', person)
+    useEffect(()=>{
+        isBusy(true)
+        async function n() {
+            let p = await person
+            let db = await P
+            console.log('searching for: ', search)
+            let ret = db(search)
+            setData(ret)
+            isBusy(false)
+            console.log('[0] -> ', ret[0])
+        } 
+        n()
+        console.log('[search] person: ', person)
 
     },[search])
 
     useEffect(() => {
-      console.log('[] person: ', person)
+        async function n() {
+            let p = await person
+            console.log('result: ', p(3,3))        
+        } 
+        n()
+        console.log('[] person: ', person)
     },[])
 
     return (
         <View style={styles.container}>
-        <SearchBar
-        placeholder="Type Here..."
-        disabled={disable}
-        onChangeText={(text) => searchInput(text)}
-        onClear={(text) => searchInput('')}
-        showLoading={busy}
-        value={search}
-        />
-        <FlatList
-        data = {data}
-        renderItem = {
-            ({item}) =>
-            <Text style={styles.item}>{item.key}</Text>
-        }
-        />
+            <SearchBar
+            placeholder="Type Here..."
+            disabled={disable}
+            onChangeText={(text) => searchInput(text)}
+            onClear={(text) => searchInput('')}
+            showLoading={busy}
+            value={search}
+            />
+            <ButtonGroup
+              onPress={updateIndex}
+              selectedIndex={selectedIndex}
+              buttons={['One', 'Two', 'Three']}
+              containerStyle={{height: 50}}
+            />
+            <FlatList
+            data = {data}
+            renderItem = {
+                ({item}) =>
+                <Text style={styles.item}>{item.name}</Text>
+            }
+            />
         </View>
     );
 }
