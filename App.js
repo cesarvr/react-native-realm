@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import {Persons} from './lib/Populate'
 import { SearchBar } from 'react-native-elements';
 
@@ -16,41 +16,53 @@ const styles = StyleSheet.create({
     },
 });
 
-
-let s = ''
-let Person = undefined
-
-Persons().then(p => Person = p)
-
 const FlatListBasics = () => {
-    const [data, setData] = useState([{key: 'Empty'}]) 
+    const [busy, isBusy] = useState(true)
+    const [disable, isDisable] = useState(false)
+    const [data, setData] = useState([{key: 'Empty'}])
     const [search, setSearch] = useState('')
-    let d = []
+
+    const [person] = useState(async () => Persons())
+
+    console.log('once ?')
+
     function searchInput(str) {
-        setSearch(str.toLowerCase())
+        let query = str.toLowerCase()
+        setSearch(query)
+        isBusy(true)
     }
 
+    useEffect(()=>{
+      // person.then(db => {
+      //   console.log('wtf -> ', Array.isArray(db), typeof db)
+      //   let d = db('cesar')
+      //   console.log('d', d)
+      //   return [{key: 'Empty'}]
+      // })
+      // .then(data => setData(data))
+
+      console.log('[search] person: ', person)
+
+    },[search])
+
     useEffect(() => {
-        if(Person !== undefined && s !== search){
-            console.log('searching...', s, search)
-            s = search
-            d = Person(search)
-            setData(d)
-        }
-    })
+      console.log('[] person: ', person)
+    },[])
 
     return (
         <View style={styles.container}>
         <SearchBar
         placeholder="Type Here..."
+        disabled={disable}
         onChangeText={(text) => searchInput(text)}
         onClear={(text) => searchInput('')}
+        showLoading={busy}
         value={search}
         />
-        <FlatList  
+        <FlatList
         data = {data}
         renderItem = {
-            ({item}) => 
+            ({item}) =>
             <Text style={styles.item}>{item.key}</Text>
         }
         />
@@ -59,4 +71,3 @@ const FlatListBasics = () => {
 }
 
 export default FlatListBasics;
-
