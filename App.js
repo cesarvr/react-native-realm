@@ -23,7 +23,6 @@ const FlatListBasics = () => {
     const [data, setData] = useState([{name: 'Empty'}])
     const [search, setSearch] = useState('')
 
-    const [person] = useState( async () => (x,y) => x+y  )
     const [P] = useState( async () => await Persons()  )
 
     console.log('once ?')
@@ -39,7 +38,6 @@ const FlatListBasics = () => {
     useEffect(()=>{
         isBusy(true)
         async function n() {
-            let p = await person
             let db = await P
             console.log('searching for: ', search)
             let ret = db(search)
@@ -48,42 +46,33 @@ const FlatListBasics = () => {
             console.log('[0] -> ', ret[0])
         } 
         n()
-        console.log('[search] person: ', person)
 
     },[search])
 
-    useEffect(() => {
-        async function n() {
-            let p = await person
-            console.log('result: ', p(3,3))        
-        } 
-        n()
-        console.log('[] person: ', person)
-    },[])
-
     return (
         <View style={styles.container}>
-            <SearchBar
-            placeholder="Type Here..."
-            disabled={disable}
-            onChangeText={(text) => searchInput(text)}
-            onClear={(text) => searchInput('')}
-            showLoading={busy}
-            value={search}
-            />
-            <ButtonGroup
-              onPress={updateIndex}
-              selectedIndex={selectedIndex}
-              buttons={['One', 'Two', 'Three']}
-              containerStyle={{height: 50}}
-            />
-            <FlatList
-            data = {data}
-            renderItem = {
-                ({item}) =>
-                <Text style={styles.item}>{item.name}</Text>
-            }
-            />
+        <SearchBar
+        placeholder="Type Here..."
+        disabled={disable}
+        onChangeText={(text) => searchInput(text)}
+        onClear={(text) => searchInput('')}
+        showLoading={busy}
+        value={search}
+        />
+        <ButtonGroup
+        onPress={updateIndex}
+        selectedIndex={selectedIndex}
+        buttons={['One', 'Two', 'Three']}
+        containerStyle={{height: 50}}
+        />
+        <FlatList
+        data = {data}
+        renderItem = {
+            ({item}) =>
+            <Text style={styles.item}>{item.name}</Text>
+        }
+        keyExtractor={(item, index) => index.toString()}
+        />
         </View>
     );
 }
