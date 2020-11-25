@@ -14,11 +14,14 @@ npx react-native run-ios # or run-android
 ```
 
 
-### What it does ?
+## What it does ?
 
 This app will download and insert a dictionary of names (1.3 MB) into the Realm database, then it will sync this to [MongoDB Realm](https://cloud.mongodb.com/).
 
-### Good Parts
+
+# Realm-JS Framework
+
+## Good Parts
 
 #### Fast Queries
 
@@ -84,7 +87,7 @@ keyExtractor={(item, index) => index.toString()} />
 ```
 
 
-### Bad Parts
+## Bad Parts
 
 ![](https://github.com/cesarvr/react-native-realm/blob/master/docs/blocking.gif?raw=true)
 > In this example the UI is unresponsive to taps.
