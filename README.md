@@ -20,7 +20,7 @@ This app will download and insert a dictionary of names (1.3 MB) into the Realm 
 
 ### Good Parts
 
-#### Fast Queries
+#### Fast Queries
 
 ![](https://github.com/cesarvr/react-native-realm/blob/master/docs/search.gif?raw=true)
 
