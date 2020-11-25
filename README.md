@@ -44,7 +44,7 @@ To achieve this we just connect the query results to the [FlatListView](https://
   Handle realm instantiation...
 */
 
-query(query) {
+QueryNames(query) {
   let realm_query = `name BEGINSWITH "${query}"`
   list = realm.objects('Dictionary')
 
@@ -53,13 +53,15 @@ query(query) {
 
   return list
 }
+```
+> Setup Realm Query
 
 
-/*
-  React component
-*/
+```js
+/* Vars */
 const [data, setData] = useState([{name: 'Empty'}])
 
+/* Triggers */
 useEffect(()=>{
     let query = async function() {
         let qnames = await QueryNames
@@ -69,10 +71,7 @@ useEffect(()=>{
     }()
 },[search])  // Triggers when user start writing a query...
 
-/*
-  Rendering
-*/
-
+/* Rendering */
 <FlatList
 data = {data}
 renderItem = {
@@ -80,11 +79,11 @@ renderItem = {
 } />
 
 ```
-
+> Setting Up The React Native Component
 
 ## Bad Parts
 
 ![](https://github.com/cesarvr/react-native-realm/blob/master/docs/blocking.gif?raw=true)
 > In this example the UI is unresponsive to taps.
 
-The function ``Realm.write`` is **blocking** and as we can see if we stress the I/O enough we can have an unresponsive UI.
+The function ``Realm.write`` is **blocking** and as we can see if we stress the I/O *enough* we can have an unresponsive UI.
