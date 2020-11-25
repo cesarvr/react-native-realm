@@ -10,11 +10,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "lodash": "^4.17.20",
     "react": "16.13.1",
     "react-native": "0.63.2",
     "react-native-elements": "^2.3.2",
     "react-native-vector-icons": "^7.1.0",
-    "realm": "^10.0.0-beta.13"
+    "realm": "^10.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

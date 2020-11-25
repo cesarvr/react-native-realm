@@ -25,26 +25,25 @@ const FlatListBasics = () => {
 
     const [P] = useState( async () => await Persons()  )
 
-    console.log('once ?')
-
     function searchInput(str) {
         let query = str.toLowerCase()
         setSearch(query)
         isBusy(true)
     }
 
-    const updateIndex = (index) => setIndex(index) 
+    const updateIndex = (index) => setIndex(index)
 
     useEffect(()=>{
         isBusy(true)
+
         async function n() {
-            let db = await P
             console.log('searching for: ', search)
+            let db = await P
+
             let ret = db(search)
             setData(ret)
             isBusy(false)
-            console.log('[0] -> ', ret[0])
-        } 
+        }
         n()
 
     },[search])
@@ -63,16 +62,14 @@ const FlatListBasics = () => {
         onPress={updateIndex}
         selectedIndex={selectedIndex}
         buttons={['One', 'Two', 'Three']}
-        containerStyle={{height: 50}}
-        />
+        containerStyle={{height: 50}} />
         <FlatList
         data = {data}
         renderItem = {
             ({item}) =>
             <Text style={styles.item}>{item.name}</Text>
         }
-        keyExtractor={(item, index) => index.toString()}
-        />
+        keyExtractor={(item, index) => index.toString()} />
         </View>
     );
 }
