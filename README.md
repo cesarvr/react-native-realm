@@ -61,15 +61,12 @@ query(query) {
 const [data, setData] = useState([{name: 'Empty'}])
 
 useEffect(()=>{
-    isBusy(true)
+    let query = async function() {
+        let qnames = await QueryNames
+        let ret = qnames(search)
 
-    async function n() {
-
-        let ret = db.query(MyDB.query)
         setData(ret)
-    }
-    n()
-
+    }()
 },[search])  // Triggers when user start writing a query...
 
 /*
@@ -79,10 +76,8 @@ useEffect(()=>{
 <FlatList
 data = {data}
 renderItem = {
-    ({item}) =>
-    <Text style={styles.item}>{item.name}</Text>
-}
-keyExtractor={(item, index) => index.toString()} />
+    ({item}) => <Text style={styles.item}>{item.name}</Text>
+} />
 
 ```
 
