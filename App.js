@@ -23,7 +23,7 @@ const FlatListBasics = () => {
     const [data, setData] = useState([{name: 'Empty'}])
     const [search, setSearch] = useState('')
 
-    const [P] = useState( async () => await Persons()  )
+    const [QueryNames] = useState( async () => await Persons()  )
 
     function searchInput(str) {
         let query = str.toLowerCase()
@@ -35,17 +35,13 @@ const FlatListBasics = () => {
 
     useEffect(()=>{
         isBusy(true)
+        let query = async function() {
+            let qnames = await QueryNames
+            let ret = qnames(search)
 
-        async function n() {
-            console.log('searching for: ', search)
-            let db = await P
-
-            let ret = db(search)
             setData(ret)
             isBusy(false)
-        }
-        n()
-
+        }()
     },[search])
 
     return (
