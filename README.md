@@ -182,7 +182,7 @@ Now everything works as expected but with few challenges:
 - We need to add a new dependency in the form of [BSON library](https://www.npmjs.com/package/bson).
 - We need to add a new field called `_id` and it requires to plan and deploy *migration code* to existing customers.
 - A refactor of any ``write`` operations across the codebase.
-- Additional pains if you have a pre-existing ``primaryKey`` and more refactor can be necessary here, in worst case scenario a re-design.
+- Additional pains if you have a pre-existing ``primaryKey`` and more refactor might be necessary here and in the worst case scenario a re-design may be required.
 
 
 
