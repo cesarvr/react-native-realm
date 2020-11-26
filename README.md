@@ -91,18 +91,12 @@ renderItem = {
 
 
 
-### I/O Blocking
+### Writes Are Slow And Blocking
 
-![](https://github.com/cesarvr/react-native-realm/blob/master/docs/blocking.gif?raw=true)
-> In this example the UI is unresponsive to taps.
-
-The function ``Realm.write`` is **blocking** and as we can see if we stress the I/O *enough* we can have an unresponsive UI.
-
-This happens because I try to insert [164K Registers](https://raw.githubusercontent.com/philipperemy/name-dataset/master/names_dataset/first_names.all.txt) into the database.
+If you stress enough the ``write`` operation it will block. To demo this in the application I wrote a function that builds a name dictionary with [164K Registers](https://raw.githubusercontent.com/philipperemy/name-dataset/master/names_dataset/first_names.all.txt) into the database.
 
 ```js
-
-/* fetching names... */
+/* fetching 164k names... */
 
 /* inserting name's */
 realm.write(() => {
@@ -115,6 +109,16 @@ realm.write(() => {
 
   )
 })
+/*
+  loading: 164433 registers
+  current speed: time it took to store: 9-8s
 
+  Machine spec:
+  disk type => Macbook 16 PCIe SSD.
+  disk performance for 1GB write =>
+    570949632 bytes (571 MB, 544 MiB) copied, 996 MB/s
+*/
 ```
-> This block takes 8 seconds to insert 164,433 registers.
+
+![](https://github.com/cesarvr/react-native-realm/blob/master/docs/blocking.gif?raw=true)
+> In this example the UI is unresponsive to taps.
