@@ -109,13 +109,14 @@ realm.write(() => {
 
   )
 })
+
 /*
   loading: 164433 registers
-  current speed: time it took to store: 9-8s
+  time to completion: ≈9s
 
   Machine spec:
-  disk type => Macbook 16 PCIe SSD.
-  disk performance for 1GB write =>
+  Macbook 16 PCIe SSD.
+  disk performance for a raw 1GB write =>
     570949632 bytes (571 MB, 544 MiB) copied, 996 MB/s
 */
 ```
