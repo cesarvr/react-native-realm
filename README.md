@@ -81,13 +81,108 @@ renderItem = {
 ```
 > Setting Up The React Native Component
 
-## Bad Parts
+## Difficult Parts
 
-### Sync Is Hard  
+### Sync
+
+#### Schema Format
+
+To model the data of my app, I wrote the most simple schema supported:
+
+```js
+const PersonSchema = {
+    name: 'Dictionary',
+    properties: {
+        name: 'string',
+        status: 'bool'
+    }
+}
+```
+
+Once we [configure the Atlas cluster](https://docs.mongodb.com/realm/get-started/create-realm-app/) we find the first obstacle in the form that we need to redefine our schema in another format BSON, which looks like this:
+
+```js
+{
+  "title": "Dictionary",
+  "bsonType": "object",
+  "required": [
+    "name",
+    "status"
+  ],
+  "properties": {
+    "name": {
+      "bsonType": "string"
+    },
+    "status": {
+      "bsonType": "boolean"
+    }
+  }
+}
+
+```
+
+> Now we need to maintain two definitions in two different formats, requiring the user to update two places for any change in the future.
 
 
+#### Unwanted Change
 
 
+As part of this experiment I try to keep my **local** schema unchanged, but when I tried to save it, we get the following error on Realm *cloud*:
+
+![](https://github.com/cesarvr/react-native-realm/blob/master/docs/sync-error-1.png?raw=true)
+
+This basically tell us that we need to add an ``_id`` to our schema in order to enable ``sync``:
+
+```js
+{
+  "title": "Dictionary",
+  "bsonType": "object",
+  "required": [
+    "_id",     // new
+    "name",
+    "status"
+  ],
+  "properties": {
+    "_id": {     // new
+      "bsonType": "objectId"
+    },
+    "name": {
+      "bsonType": "string"
+    },
+    "status": {
+      "bsonType": "boolean"
+    }
+  }
+}
+```
+
+
+This seems to mitigate the error in the cloud, but if we execute this locally our app will *crash* via abort signal ([SIGABRT](https://en.wikipedia.org/wiki/Signal_(IPC)#SIGABRT)) showing this error:
+
+>  realm::InvalidAdditiveSchemaChangeException: The following changes cannot be made in additive-only schema mode:
+- Primary Key for class 'Dictionary' has been removed.
+
+To fix this we have no choice but to change our local schema to something like this:
+
+```js
+const bson = require('bson')
+
+const PersonSchema = {
+    name: 'Dictionary',
+    properties: {
+        name: 'string',
+        status: 'bool',
+        _id: 'objectId',
+    },
+    primaryKey: '_id'   // Another change... the impact is higher if you already set a primaryKey.
+}
+```
+
+Now everything works as expected but with few challenges:
+- We need to add a new dependency in the form of [BSON library](https://www.npmjs.com/package/bson).
+- We need to add a new field called `_id` and it requires to plan and deploy *migration code* to existing customers.
+- A refactor of any ``write`` operations across the codebase.
+- Additional pains if you have a pre-existing ``primaryKey`` and more refactor can be necessary here, in worst case scenario a re-design.
 
 
 
