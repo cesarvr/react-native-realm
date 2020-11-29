@@ -1,13 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View, ActivityIndicator} from 'react-native';
-import {Persons} from './lib/Populate'
-import { SearchBar, ButtonGroup } from 'react-native-elements';
+import {Persons} from './lib/Realm'
+import PureObject from './lib/PureObject'
+
+import { SearchBar, ButtonGroup, Button, Header } from 'react-native-elements';
 
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 52
+        paddingTop: 0
     },
     item: {
         padding: 10,
@@ -16,14 +19,37 @@ const styles = StyleSheet.create({
     },
 });
 
-const FlatListBasics = () => {
+const db = new PureObject()
+let queryEngine = undefined
+
+
+const DataLoader = {
+  Object: async function(){
+    console.log('preparing object engine')
+
+    await db.loadDictionary()
+    return db.search.bind(db)
+  },
+  Realm: async function() {
+    console.log('preparing realm engine')
+    let person = await Persons()
+    person = await person
+    console.log('realm: ', person)
+    return person
+  }
+}
+
+
+searchEngine = 'Realm'
+const Views = ['Realm', 'Object']
+const HomeView = ({ navigation }) => {
     const [busy, isBusy] = useState(true)
     const [selectedIndex, setIndex] = useState(0)
     const [disable, isDisable] = useState(false)
     const [data, setData] = useState([{name: 'Empty'}])
     const [search, setSearch] = useState('')
 
-    const [QueryNames] = useState( async () => await Persons()  )
+    const [Realm] = useState( async () => await Persons()  )
 
     function searchInput(str) {
         let query = str.toLowerCase()
@@ -31,21 +57,35 @@ const FlatListBasics = () => {
         isBusy(true)
     }
 
-    const updateIndex = (index) => setIndex(index)
+    const updateIndex = async (index) => {
+      setIndex(index)
+      searchEngine = Views[index]
+      queryEngine = await DataLoader[searchEngine]()
+      setSearch('')
+    }
 
     useEffect(()=>{
         isBusy(true)
-        let query = async function() {
-            let qnames = await QueryNames
-            let ret = qnames(search)
+        
+        let lookUp = async function(_search) {
+            queryEngine = queryEngine || await DataLoader['Realm']()
 
+            let ret = queryEngine(_search)
             setData(ret)
             isBusy(false)
-        }()
+        }(search)
+
     },[search])
 
     return (
         <View style={styles.container}>
+        <Header
+          centerComponent={{ text: 'Database', style: { color: '#fff' } }}
+          containerStyle={{
+            backgroundColor: '#2f3337',
+            justifyContent: 'space-around',
+          }}
+        />
         <SearchBar
         placeholder="Type Here..."
         disabled={disable}
@@ -57,7 +97,7 @@ const FlatListBasics = () => {
         <ButtonGroup
         onPress={updateIndex}
         selectedIndex={selectedIndex}
-        buttons={['One', 'Two', 'Three']}
+        buttons={Views}
         containerStyle={{height: 50}} />
         <FlatList
         data = {data}
@@ -70,4 +110,5 @@ const FlatListBasics = () => {
     );
 }
 
-export default FlatListBasics;
+
+export default HomeView;
