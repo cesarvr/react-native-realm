@@ -208,6 +208,7 @@ realm.write(() => {
 /*
   loading: 164433 registers
   time to completion: ≈9s
+  performance: 18K registry per second. 
 
   Machine spec:
   Macbook 16 PCIe SSD.
