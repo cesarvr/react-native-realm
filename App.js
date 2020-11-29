@@ -32,9 +32,9 @@ const DataLoader = {
   },
   Realm: async function() {
     console.log('preparing realm engine')
+
     let person = await Persons()
     person = await person
-    console.log('realm: ', person)
     return person
   }
 }
@@ -66,7 +66,7 @@ const HomeView = ({ navigation }) => {
 
     useEffect(()=>{
         isBusy(true)
-        
+
         let lookUp = async function(_search) {
             queryEngine = queryEngine || await DataLoader['Realm']()
 
