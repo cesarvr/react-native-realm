@@ -208,6 +208,7 @@ realm.write(() => {
 /*
   loading: 164433 registers
   time to completion: ≈9s
+  performance: 18K registry per second. 
 
   Machine spec:
   Macbook 16 PCIe SSD.
@@ -218,3 +219,6 @@ realm.write(() => {
 
 ![](https://github.com/cesarvr/react-native-realm/blob/master/docs/blocking.gif?raw=true)
 > In this example the UI is unresponsive to taps.
+
+In conclusion the dictionary weight approximately ``1.3MB`` and somehow my we are hitting some optimization problem that is eating the SSD performance brandwith of `996MB` per second. 
+
