@@ -188,7 +188,7 @@ Now everything works as expected but with few challenges:
 
 ### Writes Are Slow And Blocking
 
-If you stress enough the ``write`` operation it will block. To demo this in the application I wrote a [function that builds a name dictionary](https://github.com/cesarvr/react-native-realm/blob/master/lib/Populate.js#L102-L125) with [164K Registers](https://raw.githubusercontent.com/philipperemy/name-dataset/master/names_dataset/first_names.all.txt) into the database.
+If you stress enough the ``write`` operation it will block. To demo this in the application I wrote a [function that builds a name dictionary](https://github.com/cesarvr/react-native-realm/blob/master/lib/Realm.js#L96-L109) with [164K Registers](https://raw.githubusercontent.com/Debdut/names.io/master/first_names.all.txt) into the database.
 
 ```js
 /* fetching 164k names... */
